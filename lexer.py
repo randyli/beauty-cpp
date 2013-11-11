@@ -1,20 +1,21 @@
 import ply.lex as lex
 keywords = {
-"alignas":"alignas", "alignof":"alignof", "anda":"anda", "and_eq":"and_eq", "asm":"asm", "auto":"auto", "bitand":"bitand",
-"bitor":"bitor", "bool":"bool", "break":"break", "case":"case", "catch":"catch", "char":"char", "char16_t":"char16_t",
-"char32_t":"char32_t", "class":"class", "compl":"compl", "const":"const", "constexpr":"constexpr", "const_cast":"const_cast",
-"continue":"continue", "decltype":"decltype", "default":"default", "delete":"delete", "do":"do", "double":"double",
-"dynamic_cast":"dynamic_cast", "else":"else", "enum":"enum", "explicit":"explicit", "export":"export", "extern":"extern",
-"false":"false", "float":"float", "for":"for", "friend":"friend", "goto":"goto", "if":"if", "inline":"inline", "int":"int",
-"long":"long", "mutable":"mutable", "namespace":"namespace", "new":"new", "noexcept":"noexcept", "not":"not", "not_eq":"not_eq",
-"nullptr":"nullptr", "operator":"operator", "or":"or", "or_eq":"or_eq", "private":"private", "protected":"protected", "public":"public",
-"register":"register", "reinterpret_cast":"reinterpret_cast", "return":"return", "short":"short", "signed":"signed", "sizeof":"sizeof",
-"static":"static", "static_assert":"static_assert", "static_cast":"static_cast", "struct":"struct", "switch":"switch", 
-"template":"template", "this":"this", "thread_local":"thread_local", "throw":"throw", "true":"true", "try":"try", "typedef":"typedef",
-"typeid":"typeid", "typename":"typename", "union":"union", "unsigned":"unsigned", "using":"using", "virtual":"virtual",
-"void":"void", "volatile":"volatile", "wchar_t":"wchar_t", "while":"while", "xor":"xor", "xor_eq":"xor_eq","size_t":"size_t",
-"uint64_t":"uint64_t"
+"alignas":2, "alignof":2, "anda":2, "and_eq":2, "asm":2, "auto":2, "bitand":2,
+"bitor":2, "bool":2, "break":1, "case":1, "catch":1, "char":2, "char16_t":2,
+"char32_t":2, "class":2, "compl":2, "const":1, "constexpr":1, "const_cast":1,
+"continue":1, "decltype":2, "default":1, "delete":1, "do":1, "double":2,
+"dynamic_cast":2, "else":1, "enum":2, "explicit":1, "export":2, "extern":1,
+"false":1, "float":2, "for":1, "friend":1, "goto":1, "if":1, "inline":1, "int":2,
+"long":2, "mutable":1, "namespace":2, "new":1, "noexcept":2, "not":1, "not_eq":1,
+"nullptr":2, "operator":1, "or":1, "or_eq":1, "private":1, "protected":1, "public":1,
+"register":1, "reinterpret_cast":2, "return":1, "short":2, "signed":2, "sizeof":2,
+"static":1, "static_assert":1, "static_cast":2, "struct":2, "switch":1, 
+"template":2, "this":1, "thread_local":2, "throw":1, "true":1, "try":1, "typedef":2,
+"typeid":2, "typename":1, "union":2, "unsigned":2, "using":1, "virtual":1,
+"void":2, "volatile":1, "wchar_t":2, "while":1, "xor":1, "xor_eq":1,"size_t":2,
+"uint64_t":1, "unit32_t":1
 }
+
 tokens = (
   'HEX',
   'FLOAT',
@@ -36,8 +37,9 @@ states = (('mcomment', 'exclusive'),)
 
 def t_ID(t):
   r'[a-zA-Z_][a-zA-Z_0-9]*'
-  if keywords.get(t.value) is not None:
-    t.html = '<span class="bc_keyword">%s</span>'%t.value 
+  keyword_type = keywords.get(t.value) 
+  if keyword_type is not None:
+    t.html = '<span class="bc_keyword_%d">%s</span>'%(keyword_type,t.value)
     t.type = 'KEYWORD'
   else:
     t.type = 'ID'

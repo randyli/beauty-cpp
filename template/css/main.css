@@ -14,10 +14,15 @@ a {
 .bc_comment {
 	color:#888888;
 }
-.bc_keyword {
-  font-style:italic;
+
+.bc_keyword_1 {
+	color:#ec2772;
+}
+
+.bc_keyword_2 {
 	color:#53d2ef;
 }
+
 .bc_string {
 	color:#debb74;
 }
