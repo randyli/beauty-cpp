@@ -9,3 +9,7 @@ A simple tool used to generate cross reference of cpp project, implement in pyth
 * link to global variable
 * reference to Class and Method
 * syntax error report
+
+#Licence
+
+MIT
