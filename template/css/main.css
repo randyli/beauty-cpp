@@ -1,6 +1,7 @@
 body {
 	background-color:#272822;
 	color:white;
+	font-family: Consolas,"Liberation Mono",Courier,monospace;
 	font-size: 13px;
 	line-height: 13px;
 }
@@ -21,3 +22,11 @@ a {
 	color:#debb74;
 }
 
+.bc_lineno {
+        width:20px;
+        color:#888888;
+}
+
+.bc_number {
+        color:#ae81ff;
+}
