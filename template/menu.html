@@ -1,0 +1,38 @@
+<html>
+<head>
+<title>Menu</title>
+<style type="text/css">
+body {
+	font-family:verdana,arial,sans-serif;
+	font-size:10pt;
+	margin:10px;
+	background-color:#F2F2F2;
+	}
+</style>
+<link type="text/css" rel="stylesheet" href="css/style.css"/>
+<link type="text/css" rel="stylesheet" href="jqueryFileTree/jqueryFileTree.css"/>
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="jqueryFileTree/jqueryFileTree.js"></script>
+
+</head>
+<body>
+	<div style="height:400px;" id="menu">
+
+	</div>
+
+<script type="text/javascript">
+$(document).ready( function() {
+    $('#menu').fileTree({
+        root: '/',
+        script: '/cgi-bin/menu.py',
+        expandSpeed: 1000,
+        collapseSpeed: 1000,
+        multiFolder: false
+    }, function(href){
+    	parent.frames['content'].location.href = href;
+    });
+});
+
+</script>
+</body>
+</html>

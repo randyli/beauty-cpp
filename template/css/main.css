@@ -1,0 +1,23 @@
+body {
+	background-color:#272822;
+	color:white;
+	font-size: 13px;
+	line-height: 13px;
+}
+table tr, table td{
+	padding:0px;
+}
+a {
+	color:#a6e22d;
+}
+.bc_comment {
+	color:#888888;
+}
+.bc_keyword {
+  font-style:italic;
+	color:#53d2ef;
+}
+.bc_string {
+	color:#debb74;
+}
+
