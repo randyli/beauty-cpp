@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 
 from clang.cindex import *
-from pprint import pprint
-from optparse import OptionParser, OptionGroup
 from tagdb import TagDb
 import ply.lex as lex
 import lexer
+from ref_visitor import RefVisitor
 
 html_header = '''
 <!DOCTYPE html>
@@ -96,9 +95,54 @@ def parse(f, code):
   html += '</td></tr>' + html_footer
   return html
 
+'''
+The source files
+Each one will be processed as a clang translation unit
+'''
+srcs = [
+'assoc.c',
+'cache.c',
+'daemon.c',
+'hash.c',
+'items.c',
+'memcached.c',
+'sasl_defs.c',
+'sizes.c',
+'slabs.c',
+'solaris_priv.c',
+'stats.c',
+'testapp.c',
+'thread.c',
+'timedrun.c',
+'util.c'
+    ]
 
+'''
+The arguments
+the first 4 args are the system include path in my mac
+you should get your real path with the command: "cpp -v"
+'''
+args = [
+   '-I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/5.0/include',
+   '-I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include',
+   '-I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include',
+   '-I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/System/Library/Frameworks',
+   '-DHAVE_CONFIG_H',
+   '-I.',
+   '-DNDEBUG',
+   '-I/usr/local/include'
+    ]
 
 def main():
+  global args
+  for f in srcs:
+    index = Index.create()
+    tu = index.parse(f, args)
+    if not tu:
+      print "cannot parse: %s"%f
+    db = TagDb()
+    v = RefVisitor(db) 
+    v.run(tu)
   for f in db.files():
     if f == 'None':
       continue
@@ -110,5 +154,4 @@ def main():
     wfd.write(html)
     wfd.close()
 if __name__ == '__main__':
-
     main()

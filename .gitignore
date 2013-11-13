@@ -1,2 +1,3 @@
 memcached*
 *.pyc
+test*

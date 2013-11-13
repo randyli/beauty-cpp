@@ -1,7 +1,6 @@
 from clang.cindex import Index
 from clang.cindex import Cursor
 from clang.cindex import CursorKind
-from optparse import OptionParser, OptionGroup
 from tagdb import TagDb
 
 class RefVisitor:
@@ -64,38 +63,10 @@ class RefVisitor:
     self.__recusive_visit(self.tu.cursor)
     for f in self.tu.get_includes():
       self.tagdb.add_include(f.source, f.include, f.location.offset)
-
+    self.tagdb.commit()
   def __recusive_visit(self, node):
     if self.__visit(node) is False:
       return
     for c in node.get_children():
       self.__recusive_visit(c)
 
-def main():
-  global opts
-  parser = OptionParser("usage: %prog [options] {filename} [clang-args*]")
-  parser.disable_interspersed_args()
-  (opts, args) = parser.parse_args()
-
-  if len(args) == 0:
-      parser.error('invalid number arguments')
-
-  index = Index.create()
-  args.append('-I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/5.0/include')
-  args.append('-I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include')
-  args.append('-I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include')
-  args.append('-I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/System/Library/Frameworks')
-  args.append('-DHAVE_CONFIG_H')
-  args.append('-I.')
-  args.append('-DNDEBUG')
-  args.append('-I/usr/local/include')
-  tu = index.parse(None, args)
-  if not tu:
-    parser.error("unable to load input")
-  db = TagDb()
-  v = RefVisitor(db) 
-  v.run(tu)
-  db.dump()
-
-if __name__ == '__main__':
-    main()

@@ -5,12 +5,14 @@ import sqlite3
 class TagDb:
   db=''
   conn = None
+
   def __exe(self, sql):
     c = self.conn.cursor()
     c.execute(sql)
-    self.conn.commit()
     c.close()
-  
+  def commit(self):
+    self.conn.commit()
+
   def __fetch_one(self, sql):
     c = self.conn.cursor()
     c.execute(sql)
@@ -37,7 +39,9 @@ class TagDb:
     
     sql = 'create table if not exists tb_refs (usr text, src text, offset integer, tag text)'
     self.__exe(sql)
-    sql = 'create index if not exists index_refs on tb_refs(usr ASC)'
+    sql = 'create index if not exists index_refs_usr on tb_refs(usr ASC)'
+    self.__exe(sql)
+    sql = 'create index if not exists index_refs_src on tb_refs(src,offset, tag)'
     self.__exe(sql)
     
     sql = 'create table if not exists tb_includes (src text, include text, offset integer)'
@@ -79,7 +83,7 @@ class TagDb:
       if r is None: return None
       row[1] = r[0]
       return row
-
+  
   def get_include(self, src, offset):
     sql = 'select * from tb_includes where src = "%s" and offset=%d'%(src, offset)
     return self.__fetch_one(sql) 
@@ -137,8 +141,10 @@ class TagDb:
     print "tb_includes"
     for r in rows:
       print '[%s]' % ', '.join(map(str, r)) 
+'''
 db = TagDb()
 db.dump()
 for f in db.files():
   print f
 db.close()
+'''
