@@ -13,6 +13,7 @@ A simple tool used to generate cross reference of cpp project, implement in pyth
 * run bc.py in your project 
 
 #Comming Soon
+* function list
 * link to global variable
 * reference to Class and Method
 * syntax error report
