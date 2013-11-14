@@ -1,3 +1,4 @@
 memcached*
 *.pyc
 test*
+SQLite*

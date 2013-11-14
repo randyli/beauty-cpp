@@ -1,10 +1,11 @@
 #!/usr/bin/env python
-
+# -*- coding: utf-8 -*- 
 from clang.cindex import *
 from tagdb import TagDb
 import ply.lex as lex
 import lexer
 from ref_visitor import RefVisitor
+import sys
 
 html_header = '''
 <!DOCTYPE html>
@@ -98,7 +99,6 @@ def parse(f, code):
 '''
 The source files
 Each one will be processed as a clang translation unit
-'''
 srcs = [
 'assoc.c',
 'cache.c',
@@ -116,12 +116,11 @@ srcs = [
 'timedrun.c',
 'util.c'
     ]
-
+'''
 '''
 The arguments
 the first 4 args are the system include path in my mac
 you should get your real path with the command: "cpp -v"
-'''
 args = [
    '-I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/5.0/include',
    '-I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include',
@@ -132,20 +131,126 @@ args = [
    '-DNDEBUG',
    '-I/usr/local/include'
     ]
-
+'''
+srcs = [
+'global.c',
+'ctime.c',
+'status.c',
+'date.c',
+'os.c',
+'fault.c',
+'mem0.c',
+'mem1.c',
+'mem2.c',
+'mem3.c',
+'mem5.c',
+'mutex.c',
+'mutex_noop.c',
+'mutex_unix.c',
+'mutex_w32.c',
+'malloc.c',
+'printf.c',
+'random.c',
+'utf.c',
+'util.c',
+'hash.c',
+'opcodes.c',
+'os_unix.c',
+'os_win.c',
+'bitvec.c',
+'pcache.c',
+'pcache1.c',
+'rowset.c',
+'pager.c',
+'wal.c',
+'btmutex.c',
+'btree.c',
+'backup.c',
+'vdbemem.c',
+'vdbeaux.c',
+'vdbeapi.c',
+'vdbetrace.c',
+'vdbe.c',
+'vdbeblob.c',
+'vdbesort.c',
+'journal.c',
+'memjournal.c',
+'walker.c',
+'resolve.c',
+'expr.c',
+'alter.c',
+'analyze.c',
+'attach.c',
+'auth.c',
+'build.c',
+'callback.c',
+'delete.c',
+'func.c',
+'fkey.c',
+'insert.c',
+'legacy.c',
+'loadext.c',
+'pragma.c',
+'prepare.c',
+'select.c',
+'table.c',
+'trigger.c',
+'update.c',
+'vacuum.c',
+'vtab.c',
+'where.c',
+'parse.c',
+'tokenize.c',
+'complete.c',
+'main.c',
+'notify.c',
+'fts3.c',
+'fts3_aux.c',
+'fts3_expr.c',
+'fts3_hash.c',
+'fts3_porter.c',
+'fts3_tokenizer.c',
+'fts3_tokenizer1.c',
+'fts3_tokenize_vtab.c',
+'fts3_write.c',
+'fts3_snippet.c',
+'fts3_unicode.c',
+'fts3_unicode2.c',
+'rtree.c',
+'icu.c',
+'fts3_icu.c'
+    ]
+args = [
+    '-DSQLITE_OS_UNIX=1',
+    '-I.',
+    '-I./src',
+    '-I./ext/rtree',
+    '-D_HAVE_SQLITE_CONFIG_H',
+    '-DBUILD_sqlite',
+    '-DNDEBUG',
+    '-DSQLITE_THREADSAFE=1',
+    '-DSQLITE_OMIT_LOAD_EXTENSION=1',
+    '-DSQLITE_TEMP_STORE=1'
+    ]
 def main():
+  reload(sys)
+  sys.setdefaultencoding('utf-8') 
+  '''
   global args
   for f in srcs:
     index = Index.create()
+    print f
     tu = index.parse(f, args)
     if not tu:
       print "cannot parse: %s"%f
     db = TagDb()
     v = RefVisitor(db) 
     v.run(tu)
+    '''
   for f in db.files():
     if f == 'None':
       continue
+    print f
     fd = open(f, 'r')
     code = fd.read()
     html = parse(f, code)

@@ -31,7 +31,7 @@ tokens = (
   'TAB',
   'NEWLINE'
 )
-literals = "+-*/{}[]()<>;?\:\\&^%$#@!~|.,='"
+literals = "+-*/{}[]()<>;?\:\\&^%$#@!~|.,='\"`"
 
 states = (('mcomment', 'exclusive'),)
 
