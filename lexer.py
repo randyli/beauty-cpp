@@ -128,7 +128,7 @@ def t_TAB(t):
   return t
 
 def t_error(t):
-  print 'Illegal character %s'%t.value
+  print('Illegal character %s'%t.value)
   quit()
   t.lexer.skip(1)
 '''
@@ -139,5 +139,5 @@ lexer.input(data)
 while True:
   t = lexer.token()
   if not t: break
-  print t
+  print(t)
 '''

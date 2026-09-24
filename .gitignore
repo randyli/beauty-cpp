@@ -2,3 +2,7 @@ memcached*
 *.pyc
 test*
 SQLite*
+__pycache__/
+usr.db
+data/
+.venv/
