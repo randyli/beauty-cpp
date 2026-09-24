@@ -127,24 +127,24 @@ class TagDb:
   def dump(self):
     sql = 'select * from tb_refs'
     rows = self.__fetch_all(sql)
-    print "tb_refs"
+    print("tb_refs")
     for r in rows:
-      print '[%s]' % ', '.join(map(str, r)) 
+      print('[%s]' % ', '.join(map(str, r)))
     sql = 'select * from tb_func_defs'
     rows = self.__fetch_all(sql)
-    print "tb_func_defs"
+    print("tb_func_defs")
     for r in rows:
-      print '[%s]' % ', '.join(map(str, r)) 
+      print('[%s]' % ', '.join(map(str, r)))
     
     sql = 'select * from tb_includes'
     rows = self.__fetch_all(sql)
-    print "tb_includes"
+    print("tb_includes")
     for r in rows:
-      print '[%s]' % ', '.join(map(str, r)) 
+      print('[%s]' % ', '.join(map(str, r)))
 '''
 db = TagDb()
 db.dump()
 for f in db.files():
-  print f
+  print(f)
 db.close()
 '''

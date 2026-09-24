@@ -1,11 +1,15 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*- 
+import os
+
 from clang.cindex import *
 from tagdb import TagDb
 import ply.lex as lex
 import lexer
 from ref_visitor import RefVisitor
-import sys
+
+if os.environ.get('LIBCLANG_LIBRARY_FILE'):
+  Config.set_library_file(os.environ['LIBCLANG_LIBRARY_FILE'])
 
 html_header = '''
 <!DOCTYPE html>
@@ -46,8 +50,8 @@ def wrapper_ref(f, offset, tag):
     html = tag
   return html
 
-def wrapper_include(f, inc_tag):
-  inc = db.get_include(f, inc_tag.lexpos)
+def wrapper_include(f, inc_tag, offset):
+  inc = db.get_include(f, offset)
   
   if inc is None:
     if inc_tag.inc_type == '<':
@@ -66,6 +70,8 @@ def parse(f, code):
   l = lex.lex(module=lexer)
   l.input(code)
   html = html_header + '<table><tr><td>%s</td><td>'%wrapper_def(f, 1)
+  char_offset = 0
+  byte_offset = 0
   
   while True:
     t = l.token()
@@ -78,9 +84,13 @@ def parse(f, code):
     elif t.type == 'NEWLINE':
       html += '</td></tr>\n<tr><td class="bc_lineno">%s</td><td>'%wrapper_def(f,t.lineno+1)
     elif t.type == 'INCLUDE':
-      html += wrapper_include(f, t)
+      byte_offset += len(code[char_offset:t.lexpos].encode('utf-8'))
+      char_offset = t.lexpos
+      html += wrapper_include(f, t, byte_offset)
     elif t.type == 'ID':
-      html += wrapper_ref(f, t.lexpos, t.value)
+      byte_offset += len(code[char_offset:t.lexpos].encode('utf-8'))
+      char_offset = t.lexpos
+      html += wrapper_ref(f, byte_offset, t.value)
     elif hasattr(t, 'html'):
       if type(t.html) is list:
         comment_line = t.lineno
@@ -233,16 +243,14 @@ args = [
     '-DSQLITE_TEMP_STORE=1'
     ]
 def main():
-  reload(sys)
-  sys.setdefaultencoding('utf-8') 
   '''
   global args
   for f in srcs:
     index = Index.create()
-    print f
+    print(f)
     tu = index.parse(f, args)
     if not tu:
-      print "cannot parse: %s"%f
+      print("cannot parse: %s"%f)
     db = TagDb()
     v = RefVisitor(db) 
     v.run(tu)
@@ -250,13 +258,12 @@ def main():
   for f in db.files():
     if f == 'None':
       continue
-    print f
-    fd = open(f, 'r')
-    code = fd.read()
+    print(f)
+    with open(f, 'r', encoding='utf-8') as fd:
+      code = fd.read()
     html = parse(f, code)
     html_file = wrapper_file_name(f) 
-    wfd = open(html_file, 'w')
-    wfd.write(html)
-    wfd.close()
+    with open(html_file, 'w', encoding='utf-8') as wfd:
+      wfd.write(html)
 if __name__ == '__main__':
     main()

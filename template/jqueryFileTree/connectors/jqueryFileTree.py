@@ -4,13 +4,15 @@
 # By Martin Skou
 #
 import os
-import urllib
+from urllib.parse import unquote
+
+from django.http import HttpResponse
 
 def dirlist(request):
    r=['<ul class="jqueryFileTree" style="display: none;">']
    try:
        r=['<ul class="jqueryFileTree" style="display: none;">']
-       d=urllib.unquote(request.POST.get('dir','c:\\temp'))
+       d=unquote(request.POST.get('dir','c:\\temp'))
        for f in os.listdir(d):
            ff=os.path.join(d,f)
            if os.path.isdir(ff):
@@ -19,7 +21,7 @@ def dirlist(request):
                e=os.path.splitext(f)[1][1:] # get .ext and remove dot
                r.append('<li class="file ext_%s"><a href="#" rel="%s">%s</a></li>' % (e,ff,f))
        r.append('</ul>')
-   except Exception,e:
+   except Exception as e:
        r.append('Could not load directory: %s' % str(e))
    r.append('</ul>')
    return HttpResponse(''.join(r))
